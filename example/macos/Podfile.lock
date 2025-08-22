@@ -1,0 +1,22 @@
+PODS:
+  - FlutterMacOS (1.0.0)
+  - shadow_screenshot (0.0.1):
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - FlutterMacOS (from `Flutter/ephemeral`)
+  - shadow_screenshot (from `Flutter/ephemeral/.symlinks/plugins/shadow_screenshot/macos`)
+
+EXTERNAL SOURCES:
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+  shadow_screenshot:
+    :path: Flutter/ephemeral/.symlinks/plugins/shadow_screenshot/macos
+
+SPEC CHECKSUMS:
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  shadow_screenshot: 965581b4a5f7ec2dbc9188fbaad5635c9426fcb1
+
+PODFILE CHECKSUM: 1d593e10997511ead9744d7facbd4de87509a5f0
+
+COCOAPODS: 1.16.2
