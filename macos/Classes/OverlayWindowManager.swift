@@ -228,7 +228,7 @@ final class OverlayWindowManager {
         window.level = .screenSaver
         window.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         window.sharingType = .none
-        window.styleMask.insert(.nonactivatingPanel)
+//        window.styleMask.insert(.nonactivatingPanel)
         window.ignoresMouseEvents = true
         window.isReleasedWhenClosed = false
     }

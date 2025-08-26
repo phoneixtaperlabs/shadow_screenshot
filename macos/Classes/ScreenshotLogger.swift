@@ -323,12 +323,12 @@ actor ScreenshotLogger {
             // DateFormatter는 파일 이름 파싱용으로 재사용
             let fileDateFormatter = DateFormatter()
             fileDateFormatter.dateFormat = "yyyy-MM-dd"
-
+            
             for fileURL in fileURLs where fileURL.pathExtension == "log" {
                 // 파일 이름에서 날짜 부분 추출 (e.g., "2025-08-26")
                 let fileName = fileURL.deletingPathExtension().lastPathComponent
                 let dateString = String(fileName.split(separator: "-").prefix(3).joined(separator: "-"))
-
+                
                 if let fileDate = fileDateFormatter.date(from: dateString) {
                     if fileDate < cutoffDate {
                         do {
@@ -346,26 +346,3 @@ actor ScreenshotLogger {
     }
 }
 
-// MARK: - Usage Example
-/*
-// Configuration (at app startup)
-await ScreenshotLogger.configure(
-    subsystem: "com.taperlabs.shadow",
-    category: "screenshot",
-    retentionDays: 30,
-    minimumLogLevel: .debug
-)
-
-// Synchronous usage (fire-and-forget)
-let logger = await ScreenshotLogger.shared
-logger.info("Application started")
-logger.debug("Debug information")
-logger.error("An error occurred")
-
-// Asynchronous usage (when you need to ensure logging completes)
-Task {
-    let logger = await ScreenshotLogger.shared
-    await logger.forceRotateLogFile()
-    await logger.updateMinimumLogLevel(.warning)
-}
-*/

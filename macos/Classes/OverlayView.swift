@@ -74,22 +74,22 @@ struct OverlayView: View {
                 Spacer()
                 
                 // Progress bar showing time remaining
-//                GeometryReader { geometry in
-//                    ZStack(alignment: .leading) {
-//                        Rectangle()
-//                            .fill(Color.white.opacity(0.2))
-//                            .frame(height: 4)
-//                        
-//                        Rectangle()
-//                            .fill(Color.yellow)
-//                            // UPDATED: Use the safe 'progress' property
-//                            .frame(width: geometry.size.width * progress, height: 4)
-//                            .animation(.linear(duration: 0.1), value: timeRemaining)
-//                    }
-//                }
-//                .frame(height: 4)
-//                .padding(.horizontal)
-//                .padding(.bottom, 20)
+                GeometryReader { geometry in
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color.white.opacity(0.2))
+                            .frame(height: 4)
+                        
+                        Rectangle()
+                            .fill(Color.yellow)
+                            // UPDATED: Use the safe 'progress' property
+                            .frame(width: geometry.size.width * progress, height: 4)
+                            .animation(.linear(duration: 0.1), value: timeRemaining)
+                    }
+                }
+                .frame(height: 4)
+                .padding(.horizontal)
+                .padding(.bottom, 20)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

@@ -8,8 +8,21 @@ public class ShadowScreenshotPlugin: NSObject, FlutterPlugin {
         registrar.addMethodCallDelegate(instance, channel: channel)
         
         let eventChannel = FlutterEventChannel(name: "shadow_screenshot_events", binaryMessenger: registrar.messenger)
-        eventChannel.setStreamHandler(ScreenshotEventManager.shared)
+        
+        // Task를 사용하여 모든 비동기 초기화 작업을 안전하게 처리
+        Task { @MainActor in
+            // 1. 로거를 먼저 설정
+            ScreenshotLogger.configure(
+                subsystem: "com.taperlabs.shadow",
+                category: "screenshot",
+                retentionDays: 7,
+                minimumLogLevel: .debug
+            )
+            // 4. 모든 준비가 끝난 후 핸들러를 설정
+            eventChannel.setStreamHandler(ScreenshotEventManager.shared)
+        }
     }
+    
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
