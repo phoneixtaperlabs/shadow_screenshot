@@ -8,6 +8,7 @@ final class ScreenshotEventManager: NSObject, FlutterStreamHandler {
     private var eventSink: FlutterEventSink?
     private var captureService: CaptureService?
     private var logger: ScreenshotLogger?
+    private let windowManager: OverlayWindowManager = OverlayWindowManager.shared
     
     nonisolated private override init() {
         super.init()
@@ -26,7 +27,7 @@ final class ScreenshotEventManager: NSObject, FlutterStreamHandler {
             let interval = params?["interval"] as? Double ?? 3.0
             let imageOptions = self.parseImageOptions(from: params?["imageOptions"] as? [String: Any])
             self.eventSink = events
-            let displayID = OverlayWindowManager.shared.showFullScreenOverlay()
+            let displayID = windowManager.showFullScreenOverlay()
             await self.startCapturing(interval: interval, convUUID: uuid, displayID: displayID, imageOptions: imageOptions)
         }
         return nil

@@ -41,6 +41,7 @@ final class OverlayWindowManager {
             return nil
         }
         let displayID = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID
+        
         createOverlay(
             frame: screen.frame,
             appName: "Full Screen",
