@@ -8,10 +8,21 @@ final class OverlayWindowManager {
     
     private var overlayWindowController: OverlayWindowController?
     private var targetWindowTimer: Timer?
+    private var logger: ScreenshotLogger?
     
-    private init() {}
+    private init() {
+        Task {
+            self.logger = await ScreenshotLogger.shared
+            self.logger?.info("OverlayWindowManager initialized")
+        }
+    }
     
     deinit {
+        Task { [logger = self.logger] in
+            // 이제 클로저는 self.logger가 아닌 캡처된 'logger' 변수를 사용합니다.
+            // deinit이 끝나도 logger 인스턴스는 유효하므로 안전합니다.
+            logger?.info("OverlayWindowManager deinit")
+        }
         print("OverlayWindowManager deinit")
     }
     
@@ -25,6 +36,7 @@ final class OverlayWindowManager {
     
     func showFullScreenOverlay(autoCloseAfter seconds: TimeInterval = 1.75) -> CGDirectDisplayID? {
         guard let screen = NSScreen.main else {
+            self.logger?.error("Could not get main screen.")
             print("Could not get main screen.")
             return nil
         }
@@ -41,7 +53,8 @@ final class OverlayWindowManager {
     
     private func createOverlay(frame: NSRect, appName: String, windowTitle: String, autoCloseAfter seconds: TimeInterval, targetWindowID: CGWindowID?) {
         cleanupOverlay()
-        
+
+        self.logger?.info("Creating overlay for: \(appName) - \(windowTitle)")
         print("Creating overlay for: \(appName) - \(windowTitle)")
         print("Frame: \(frame)")
         
