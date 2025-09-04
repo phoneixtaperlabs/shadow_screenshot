@@ -24,11 +24,12 @@ final class ScreenshotEventManager: NSObject, FlutterStreamHandler {
             self.logger?.info("Received onListen call from Flutter.")
             let params = arguments as? [String: Any]
             let uuid = params?["convUUID"] as? String
+            let userUID = params?["userUID"] as? String
             let interval = params?["interval"] as? Double ?? 3.0
             let imageOptions = self.parseImageOptions(from: params?["imageOptions"] as? [String: Any])
             self.eventSink = events
             let displayID = windowManager.showFullScreenOverlay()
-            await self.startCapturing(interval: interval, convUUID: uuid, displayID: displayID, imageOptions: imageOptions)
+            await self.startCapturing(interval: interval, convUUID: uuid, userUID: userUID, displayID: displayID, imageOptions: imageOptions)
         }
         return nil
     }
@@ -42,7 +43,7 @@ final class ScreenshotEventManager: NSObject, FlutterStreamHandler {
         return nil
     }
     
-    private func startCapturing(interval: TimeInterval, convUUID: String?, displayID: CGDirectDisplayID? = nil, imageOptions: ImageProcessor.ImageOptions? = nil) async {
+    private func startCapturing(interval: TimeInterval, convUUID: String?, userUID: String?, displayID: CGDirectDisplayID? = nil, imageOptions: ImageProcessor.ImageOptions? = nil) async {
         guard #available(macOS 14.0, *) else {
             self.logger?.error("Screenshot requires macOS 14.0 or later.")
             sendError("Screenshot requires macOS 14.0 or later")
@@ -55,11 +56,18 @@ final class ScreenshotEventManager: NSObject, FlutterStreamHandler {
             return
         }
         
+        guard let uid = userUID, !uid.isEmpty else {
+            self.logger?.error("Missing UserUID")
+            sendError("Missing or invalid userUID")
+            return
+        }
+        
         captureService = await CaptureService()
         
         await captureService?.startCapturing(
             interval: interval,
             convUUID: uuid,
+            userUID: uid,
             displayID: displayID,
             imageOptions: imageOptions,
             onCapture: { [weak self] result in

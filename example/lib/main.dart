@@ -46,7 +46,9 @@ class _MyAppState extends State<MyApp> {
         // 'resize': {'mode': 'fit', 'maxWidth': 1200, 'maxHeight': 1200},
       };
 
-      final params = {'convUUID': MyUUID.createUUID(), 'interval': 3.0, 'imageOptions': imageOptions};
+      final userUID = "userUID_example";
+
+      final params = {'convUUID': MyUUID.createUUID(), 'userUID': userUID, 'interval': 3.0, 'imageOptions': imageOptions};
 
       screenshotEvents = _shadowScreenshotPlugin
           .screenshotEventsWithParams(params)

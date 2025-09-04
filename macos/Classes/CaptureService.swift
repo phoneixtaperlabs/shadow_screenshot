@@ -30,6 +30,7 @@ actor CaptureService {
     private var captureTask: Task<Void, Never>?
     private var isCapturing = false
     private var convUUID: String = ""
+    private var userUID: String = ""
     private var displayID: CGDirectDisplayID?
     private var imageOptions: ImageProcessor.ImageOptions?
     
@@ -58,6 +59,7 @@ actor CaptureService {
     func startCapturing(
         interval: TimeInterval,
         convUUID: String,
+        userUID: String,
         displayID: CGDirectDisplayID?,
         imageOptions: ImageProcessor.ImageOptions? = nil,
         onCapture: @escaping (ScreenshotResult) -> Void,
@@ -71,6 +73,7 @@ actor CaptureService {
         
         isCapturing = true
         self.convUUID = convUUID
+        self.userUID = userUID
         self.displayID = displayID
         self.imageOptions = imageOptions
         
@@ -102,6 +105,7 @@ actor CaptureService {
         logger?.info("Stopping capture for UUID: \(convUUID)")
         isCapturing = false
         convUUID = ""
+        userUID = ""
         imageOptions = nil
         displayID = nil
         captureTask?.cancel()
@@ -118,6 +122,7 @@ actor CaptureService {
             let fileURL = try await screenshotService.saveScreenshot(
                 fileName: fileName,
                 uuid: convUUID,
+                uid: userUID,
                 displayID: displayID,
                 imageOptions: finalImageOptions,
                 excludeSelf: true

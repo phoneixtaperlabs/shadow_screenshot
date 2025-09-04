@@ -58,6 +58,7 @@ struct ScreenCaptureKitService {
     func saveScreenshot(
         fileName: String? = nil,
         uuid: String? = nil,
+        uid: String? = nil,
         displayID: CGDirectDisplayID? = nil,
         imageOptions: ImageProcessor.ImageOptions = .defaultJPEG,
         excludeSelf: Bool = true
@@ -73,6 +74,10 @@ struct ScreenCaptureKitService {
         var appDirectory = appSupportURL
             .appendingPathComponent("com.taperlabs.shadow")
         
+        if let uid = uid, !uid.isEmpty {
+            appDirectory = appDirectory.appendingPathComponent(uid)
+        }
+
         if let uuid = uuid, !uuid.isEmpty {
             appDirectory = appDirectory.appendingPathComponent(uuid)
         }
@@ -80,8 +85,9 @@ struct ScreenCaptureKitService {
         appDirectory = appDirectory.appendingPathComponent("screenshots")
         
         do {
+            // Creates directory structure if needed, safely skips existing directories
             try fileManager.createDirectory(at: appDirectory,
-                                            withIntermediateDirectories: true,
+                                            withIntermediateDirectories: true, // Won't override existing dirs
                                             attributes: nil)
         } catch {
             throw CaptureError.fileSystemError(error)

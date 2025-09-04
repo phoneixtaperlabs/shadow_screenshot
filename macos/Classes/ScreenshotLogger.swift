@@ -4,9 +4,9 @@ import os.log
 // MARK: - ScreenshotLogger Actor
 actor ScreenshotLogger {
     // MARK: - Singleton
-    private static var _shared: ScreenshotLogger?
+    @MainActor private static var _shared: ScreenshotLogger?
     
-    static var shared: ScreenshotLogger {
+    @MainActor static var shared: ScreenshotLogger {
         get async {
             if let logger = _shared {
                 return logger

@@ -2,6 +2,9 @@ import Cocoa
 import FlutterMacOS
 
 public class ShadowScreenshotPlugin: NSObject, FlutterPlugin {
+    
+    public static var shadowIconImage: NSImage?
+    
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "shadow_screenshot", binaryMessenger: registrar.messenger)
         let instance = ShadowScreenshotPlugin()
@@ -21,6 +24,37 @@ public class ShadowScreenshotPlugin: NSObject, FlutterPlugin {
             // 4. 모든 준비가 끝난 후 핸들러를 설정
             eventChannel.setStreamHandler(ScreenshotEventManager.shared)
         }
+        
+        loadShadowIcon(registrar: registrar)
+    }
+    
+    private static func loadShadowIcon(registrar: FlutterPluginRegistrar) {
+        let assetPath = "assets/images/icons/shadow.svg"
+        let assetKey = registrar.lookupKey(forAsset: assetPath)
+        
+        // ❌ 이전의 잘못된 코드
+        // guard let filePath = Bundle.main.path(forResource: assetKey, ofType: nil) else { ... }
+        
+        // ✅ 수정된 올바른 코드
+        // 앱 번들의 기본 경로와 assetKey를 직접 조합하여 전체 파일 경로를 생성합니다.
+        let bundlePath = Bundle.main.bundlePath
+        let filePath = (bundlePath as NSString).appendingPathComponent(assetKey)
+        
+        // 파일이 실제로 존재하는지 확인하는 것이 좋습니다.
+        guard FileManager.default.fileExists(atPath: filePath) else {
+            print("❌ ERROR: File does not exist at constructed path: \(filePath)")
+            return
+        }
+        
+        do {
+            // 이제 이 filePath를 사용해 데이터를 읽습니다.
+            let fileUrl = URL(fileURLWithPath: filePath)
+            let data = try Data(contentsOf: fileUrl)
+            self.shadowIconImage = NSImage(data: data)
+            print("✅ SVG icon 'shadow.svg' loaded as NSImage.")
+        } catch {
+            print("❌ ERROR: Failed to create NSImage from SVG asset: \(error)")
+        }
     }
     
     
@@ -28,7 +62,6 @@ public class ShadowScreenshotPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "getPlatformVersion":
             result("macOS " + ProcessInfo.processInfo.operatingSystemVersionString)
-            
         case "screenshot":
             let service = ScreenCaptureKitService()
             Task {
